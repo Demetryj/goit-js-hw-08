@@ -5,25 +5,19 @@ const inputRef = document.querySelector('input');
 const textareaRef = document.querySelector('textarea');
 
 const STORAGE_KEY = 'feedback-form-state';
-const valueOfkeyLocalStor = localStorage.getItem(STORAGE_KEY);
 
 formRef.addEventListener('input', throttle(onFormInput, 500));
 formRef.addEventListener('submit', onFormSubmit);
 
+const datesFormForLocalStor = {
+  email: '',
+  message: '',
+};
+
 addContentForm();
 
 function onFormInput(event) {
-  const {
-    elements: { email, message },
-  } = event.currentTarget;
-
-  const valueInputEmail = email.value;
-  const valueTextarea = message.value;
-
-  const datesFormForLocalStor = {
-    email: valueInputEmail,
-    message: valueTextarea,
-  };
+  datesFormForLocalStor[event.target.name] = event.target.value;
 
   saveCurrentValueInLocalStor(datesFormForLocalStor);
 }
@@ -35,14 +29,15 @@ function saveCurrentValueInLocalStor(object) {
 function onFormSubmit(event) {
   event.preventDefault();
 
-  console.log(JSON.parse(valueOfkeyLocalStor));
+  console.log(JSON.parse(localStorage.getItem(STORAGE_KEY)));
   event.currentTarget.reset();
   localStorage.removeItem(STORAGE_KEY);
 }
 
 function addContentForm() {
-  if (valueOfkeyLocalStor) {
-    const parseValueKey = JSON.parse(valueOfkeyLocalStor);
+  const valueKeyOfLocalStor = localStorage.getItem(STORAGE_KEY);
+  if (valueKeyOfLocalStor) {
+    const parseValueKey = JSON.parse(valueKeyOfLocalStor);
     inputRef.value = parseValueKey.email;
     textareaRef.value = parseValueKey.message;
   }
