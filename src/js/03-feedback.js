@@ -4,15 +4,12 @@ const formRef = document.querySelector('.feedback-form');
 const inputRef = document.querySelector('input');
 const textareaRef = document.querySelector('textarea');
 
+const datesFormForLocalStor = {};
+
 const STORAGE_KEY = 'feedback-form-state';
 
 formRef.addEventListener('input', throttle(onFormInput, 500));
 formRef.addEventListener('submit', onFormSubmit);
-
-const datesFormForLocalStor = {
-  email: '',
-  message: '',
-};
 
 addContentForm();
 
@@ -38,7 +35,13 @@ function addContentForm() {
   const valueKeyOfLocalStor = localStorage.getItem(STORAGE_KEY);
   if (valueKeyOfLocalStor) {
     const parseValueKey = JSON.parse(valueKeyOfLocalStor);
-    inputRef.value = parseValueKey.email;
-    textareaRef.value = parseValueKey.message;
+
+    Object.entries(parseValueKey).forEach(([name, value]) => {
+      datesFormForLocalStor[name] = value;
+      formRef.elements[name].value = value;
+    });
+
+    // inputRef.value = parseValueKey.email;
+    // textareaRef.value = parseValueKey.message;
   }
 }
